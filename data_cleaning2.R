@@ -128,7 +128,11 @@ final_data <- dates_and_pop |>
   left_join(cases, by = c("State", "MMWR_Year", "MMWR_Month", "MMWR_Week")) |>
   left_join(hosp, by = c("State", "MMWR_Year", "MMWR_Month", "MMWR_Week")) |>
   left_join(deaths, by = c("State_Full" = "State", "MMWR_Year", "MMWR_Month", "MMWR_Week")) |>
-  left_join(vax, by = c("State", "MMWR_Year", "MMWR_Month", "MMWR_Week"))
+  left_join(vax, by = c("State", "MMWR_Year", "MMWR_Month", "MMWR_Week")) |>
+  mutate(Cases = replace_na(Cases, 0), New_Hosp = replace_na(New_Hosp, 0),
+         ICU_Hosp = replace_na(ICU_Hosp, 0), 
+         Total_Hosp = replace_na(Total_Hosp, 0), 
+         Covid_Deaths = replace_na(Covid_Deaths, 0))
 
 # Export the final data into a csv file
 write.csv(final_data, "/Users/kellyli/Downloads/final_data.csv")
