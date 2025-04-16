@@ -47,7 +47,7 @@ make_pop_data <- function() {
   
   pop_data <- data.frame()
   
-  for (year in c(2020, 2021, 2022)) {
+  for (year in c(2020, 2021, 2022，2023)) {
     for (i in seq_along(states)) {
       # Seeding the random generator to keep the data consistent each run
       set.seed(i * 100 + year)
