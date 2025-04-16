@@ -13,3 +13,4 @@ final_data |>
        x = "Date", y = "Rates per 100,000 people") +
   facet_wrap(~ Outcome, scales = "free_y", ncol = 1)
 
+# Deaths rate by state for each period

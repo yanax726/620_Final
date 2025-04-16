@@ -1,5 +1,6 @@
 # Data derived from United States Census Bureau
 # Import raw population data (2020-2024)
+library(readr)
 population_raw <- read_csv("/Users/kellyli/Downloads/NST-EST2024-ALLDATA.csv")
 
 # Clean the population data
@@ -40,6 +41,7 @@ population2 <- population2 |>
   select(-region_name)
 
 # Write a function that helps retrieve data using API
+library(httr2)
 get_cdc_data <- function(api){
   request(api) |>
     req_url_query("$limit" = 10000000) |>
@@ -128,11 +130,14 @@ final_data <- dates_and_pop |>
   left_join(cases, by = c("State", "MMWR_Year", "MMWR_Month", "MMWR_Week")) |>
   left_join(hosp, by = c("State", "MMWR_Year", "MMWR_Month", "MMWR_Week")) |>
   left_join(deaths, by = c("State_Full" = "State", "MMWR_Year", "MMWR_Month", "MMWR_Week")) |>
-  left_join(vax, by = c("State", "MMWR_Year", "MMWR_Month", "MMWR_Week")) |>
-  mutate(Cases = replace_na(Cases, 0), New_Hosp = replace_na(New_Hosp, 0),
-         ICU_Hosp = replace_na(ICU_Hosp, 0), 
-         Total_Hosp = replace_na(Total_Hosp, 0), 
-         Covid_Deaths = replace_na(Covid_Deaths, 0))
+  left_join(vax, by = c("State", "MMWR_Year", "MMWR_Month", "MMWR_Week"))
+
+final_data <- final_data |>
+  filter(!State_Full %in% c("Virgin Islands", "American Samoa",
+                            "Commonwealth of the Northern Mariana Islands",
+                            "Federated States of Micronesia", "Guam",
+                            "Marshall Islands", "Republic of Palau")) |>
+  mutate(across(where(is.numeric), ~replace_na(.x, 0)))
 
 # Export the final data into a csv file
 write.csv(final_data, "/Users/kellyli/Downloads/final_data.csv")
