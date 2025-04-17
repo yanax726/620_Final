@@ -86,10 +86,11 @@ deaths <- deaths_raw |>
   mutate(MMWR_Week = as.numeric(mmwr_week),
          MMWR_Year = epiyear(ymd_hms(start_date)),
          MMWR_Month = month(as.Date(start_date)),
-         Covid_Deaths = as.numeric(covid_19_deaths)) |>
+         Covid_Deaths = as.numeric(covid_19_deaths),
+         Total_Deaths = as.numeric(total_deaths)) |>
   rename(State = state) |>
   filter(State != "United States") |>
-  select(State, MMWR_Year, MMWR_Month, MMWR_Week, Covid_Deaths)
+  select(State, MMWR_Year, MMWR_Month, MMWR_Week, Covid_Deaths, Total_Deaths)
 
 ## 4) Vaccination
 vax <- vax_raw |>
@@ -137,7 +138,9 @@ final_data <- final_data |>
                             "Commonwealth of the Northern Mariana Islands",
                             "Federated States of Micronesia", "Guam",
                             "Marshall Islands", "Republic of Palau")) |>
-  mutate(across(where(is.numeric), ~replace_na(.x, 0)))
+  mutate(across(where(is.numeric), ~replace_na(.x, 0))) |>
+  mutate(Covid_Death_Rate = (Covid_Deaths/Population)*100000)
 
 # Export the final data into a csv file
 write.csv(final_data, "/Users/kellyli/Downloads/final_data.csv")
+
