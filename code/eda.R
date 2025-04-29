@@ -5,7 +5,7 @@ library(ggplot2)
 # Read the data
 final_data <- read_csv("/Users/kellyli/Downloads/final_data.csv")
 
-# 1) Divide the pandemic period into waves
+# Divide the pandemic period into waves
 ## Trend plot 
 final_data |>
   pivot_longer(cols = c(Cases, New_Hosp, Covid_Deaths),
@@ -18,7 +18,7 @@ final_data |>
        x = "Date", y = "Rates per 100,000 people") +
   facet_wrap(~ Outcome, scales = "free_y", ncol = 1)
 
-# 2) Deaths rate by state for each period
+# Deaths rate by state for each period
 final_data |>
   ggplot(aes(x = date, y = Covid_Death_Rate, color = Region_Name)) +
   #geom_line(alpha = 0.6) +
@@ -29,9 +29,9 @@ final_data |>
        y = "Deaths per 100,000 People",
        color = "State")
 
-# 3) If COVID-19 became less or more virulent across the different periods
+# If COVID-19 became less or more virulent across the different periods
 
-# 4) Estimate excess mortality for each week for each state
+# Estimate excess mortality for each week for each state
 baseline_deaths <- final_data |>
   filter(date < as.Date("2020-03-07")) |> 
   group_by(State, MMWR_Week) |>
@@ -53,8 +53,6 @@ final_data_with_excess <- final_data |>
          Excess_Deaths = round(Total_Deaths - Expected_Deaths)) |>
   select(date, State, MMWR_Year, MMWR_Week, Total_Deaths, Covid_Deaths, 
          Expected_Deaths, Excess_Deaths)
-
-# 5)
 
 # Correlation Heatmap
 library(reshape2)
